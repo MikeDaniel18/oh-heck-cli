@@ -9,7 +9,7 @@ do
 	GOARCH=${platform_split[1]}
 	output_name='dist/oh-heck-'$GOOS'-'$GOARCH'/'
 	if [ $GOOS = "windows" ]; then
-		output_name+='.exe'
+		output_name+='oh-heck.exe'
 	fi	
 
 	env GOOS=$GOOS GOARCH=$GOARCH go build -o $output_name
