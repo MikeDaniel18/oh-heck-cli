@@ -2,7 +2,6 @@ package configs
 
 import (
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"os/user"
 	"path"
@@ -27,7 +26,7 @@ func SaveConfig(c Config) {
 func ReadConfig() *Config {
 	data, err := ioutil.ReadFile(configPath())
 	if err != nil {
-		fmt.Println(err.Error())
+		// fmt.Println(err.Error())
 		return new(Config)
 	} else {
 		var cfg Config
