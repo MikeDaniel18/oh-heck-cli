@@ -85,8 +85,9 @@ func ShowApiOptions() {
 }
 
 func InvalidApiKey() {
+	fmt.Println("Your API Key is inactive, make sure you have an active subscription.")
 	prompt := promptui.Prompt{
-		Label:     "Your API Key is invalid. Enter a new one",
+		Label:     "Enter a new API Key",
 		IsConfirm: true,
 	}
 
