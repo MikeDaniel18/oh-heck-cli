@@ -1,12 +1,7 @@
 package configs
 
 func GetWebsiteURL() string {
-	cfg := ReadConfig()
-	if !cfg.IsTesting {
-		return "https://google.com" //TODO: Change to real URL
-	} else {
-		return "https://bing.com" // TODO: Change to real testing URL
-	}
+	return "https://oh-heck.dev"
 }
 
 func GetApiURL() string {
