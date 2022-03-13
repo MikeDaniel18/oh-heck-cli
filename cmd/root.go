@@ -77,6 +77,10 @@ func askQuestion(args []string, placeholder *string) {
 	if cfg.ApiKey == "" {
 		fmt.Println("No API key stored.")
 		ShowApiOptions()
+		cfg = configs.ReadConfig()
+		if cfg.ApiKey == "" {
+			return
+		}
 	}
 	// Check for args and proceed
 	var question = ""
