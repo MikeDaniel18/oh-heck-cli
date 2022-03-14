@@ -12,8 +12,9 @@ import (
 	"os"
 	"strings"
 
-	"github.com/atotto/clipboard"
+	// "github.com/atotto/clipboard"
 	"github.com/spf13/cobra"
+	"golang.design/x/clipboard"
 )
 
 // rootCmd represents the base command when called without any subcommands
@@ -124,13 +125,8 @@ func makeBashQuestionCall(question string) {
 		if accepted {
 			// Train success
 			go models.SetQuestionResponse(*completion, true)
-			err := clipboard.WriteAll(output)
-
-			if err != nil {
-				fmt.Println("Could not copy to clipboard. On linux make sure either 'xclip' or 'xsel' is installed")
-			} else {
-				fmt.Println("Copied to clipboard")
-			}
+			copyToClipboard(output)
+			fmt.Println("Copied to clipboard")
 		} else {
 			// Train failure
 			// go models.SetQuestionResponse(*completion, false) // Default is false so no need to set
@@ -140,4 +136,14 @@ func makeBashQuestionCall(question string) {
 	} else {
 		fmt.Println("Something went wrong")
 	}
+}
+
+func copyToClipboard(text string) {
+	err := clipboard.Init()
+	if err != nil {
+		fmt.Println("Couldn't copy to clipboard")
+		return
+	}
+
+	clipboard.Write(clipboard.FmtText, []byte(text))
 }
