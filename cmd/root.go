@@ -6,14 +6,15 @@ package cmd
 
 import (
 	"fmt"
+	"oh-heck/components"
 	"oh-heck/configs"
 	"oh-heck/models"
 	"os"
 	"strings"
 
 	"github.com/atotto/clipboard"
-	"github.com/manifoldco/promptui"
 	"github.com/spf13/cobra"
+	// "golang.design/x/clipboard"
 )
 
 // rootCmd represents the base command when called without any subcommands
@@ -93,18 +94,12 @@ func askQuestion(args []string, placeholder *string) {
 	if len(args) > 0 && len(args[0]) > 3 && len(defaultValue) == 0 {
 		question = args[0]
 	} else {
-		var label = "Question"
+		var label = "Question:"
 		if len(defaultValue) > 0 {
-			label = "Try rewording"
+			label = "Try rewording:"
 		}
 
-		prompt := promptui.Prompt{
-			Label:     label,
-			Default:   defaultValue,
-			AllowEdit: true,
-		}
-
-		result, _ := prompt.Run()
+		result := components.StringInput(label, defaultValue)
 		question = result
 	}
 
@@ -124,23 +119,13 @@ func makeBashQuestionCall(question string) {
 	} else if completion != nil && len(completion.Id) > 0 {
 		output := strings.TrimSpace(completion.Response)
 
-		prompt := promptui.Prompt{
-			Label:     fmt.Sprintf("Output: $ %v", output),
-			IsConfirm: true,
-		}
+		promptQuestion := fmt.Sprintf("Output: $ %v?", output)
 
-		result, _ := prompt.Run()
-
-		if strings.ToLower(result) == "y" {
+		accepted := components.YesNoInput(promptQuestion)
+		if accepted {
 			// Train success
 			go models.SetQuestionResponse(*completion, true)
-			err := clipboard.WriteAll(output)
-
-			if err != nil {
-				fmt.Println("Could not copy to clipboard. On linux make sure either 'xclip' or 'xsel' is installed")
-			} else {
-				fmt.Println("Copied to clipboard")
-			}
+			copyToClipboard(output)
 		} else {
 			// Train failure
 			// go models.SetQuestionResponse(*completion, false) // Default is false so no need to set
@@ -149,5 +134,24 @@ func makeBashQuestionCall(question string) {
 		}
 	} else {
 		fmt.Println("Something went wrong")
+	}
+}
+
+func copyToClipboard(text string) {
+	// err := clipboard.Init()
+	// if err != nil {
+	// 	fmt.Println("Couldn't copy to clipboard")
+	// 	return
+	// }
+
+	// clipboard.Write(clipboard.FmtText, []byte(text))
+	// fmt.Println("Copied to clipboard")
+
+	err := clipboard.WriteAll(text)
+
+	if err != nil {
+		fmt.Println("Could not copy to clipboard. On linux make sure either 'xclip' or 'xsel' are installed")
+	} else {
+		fmt.Println("Copied to clipboard")
 	}
 }

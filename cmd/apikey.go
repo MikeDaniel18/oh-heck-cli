@@ -9,11 +9,10 @@ import (
 	"log"
 	"os/exec"
 	"runtime"
-	"strings"
 
+	"oh-heck/components"
 	"oh-heck/configs"
 
-	"github.com/manifoldco/promptui"
 	"github.com/spf13/cobra"
 )
 
@@ -43,58 +42,38 @@ func init() {
 }
 
 func collectUserApiKey() {
-	prompt := promptui.Prompt{
-		Label: "Enter your API Key",
+	apiKey := components.StringInput("Enter your API Key:", "")
+
+	if len(apiKey) > 0 {
+		saveApiKey(apiKey)
 	}
-
-	result, err := prompt.Run()
-
-	if err != nil {
-		fmt.Printf("Could not accept API key %v\n", err)
-		return
-	}
-
-	saveApiKey(result)
 
 }
 
 func ShowApiOptions() {
-	prompt := promptui.Prompt{
-		Label:     "Do you already have an API key",
-		IsConfirm: true,
-	}
+	hasApiKey := components.YesNoInput("Do you already have an API key?")
 
-	result, _ := prompt.Run()
-
-	if strings.ToLower(result) == "y" {
+	if hasApiKey {
 		collectUserApiKey()
 	} else {
-		prompt := promptui.Prompt{
-			Label:     "Open website to get one",
-			IsConfirm: true,
-		}
+		openWebsite := components.YesNoInput("Open website to get one?")
 
-		result, _ := prompt.Run()
-
-		if strings.ToLower(result) == "y" {
+		if openWebsite {
 			openBrowser(configs.GetWebsiteURL())
-		} else {
-			return
 		}
 	}
+
+	return
 }
 
 func InvalidApiKey() {
 	fmt.Println("Your API Key is inactive, make sure you have an active subscription.")
-	prompt := promptui.Prompt{
-		Label:     "Enter a new API Key",
-		IsConfirm: true,
-	}
+	getNewApiKey := components.YesNoInput("Enter a new API Key?")
 
-	result, _ := prompt.Run()
-
-	if strings.ToLower(result) == "y" {
+	if getNewApiKey {
 		ShowApiOptions()
+	} else {
+		log.Fatal("Oh-heck exited")
 	}
 }
 
@@ -110,14 +89,9 @@ func configureApiKeys(cmd *cobra.Command, args []string) {
 		if apiKey != "" {
 			// ask if they want to re-enter their api-key?
 
-			prompt := promptui.Prompt{
-				Label:     "You already have an API Key. Would you like to set a new one",
-				IsConfirm: true,
-			}
+			reenterApiKey := components.YesNoInput("You already have an API Key. Would you like to set a new one?")
 
-			result, _ := prompt.Run()
-
-			if strings.ToLower(result) == "y" {
+			if reenterApiKey {
 				collectUserApiKey()
 			} else {
 				return
