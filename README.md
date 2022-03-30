@@ -2,7 +2,7 @@
 
 [Oh-heck](https://oh-heck.dev) is a CLI tool that takes natural language input and outputs a terminal command using GPT-3.
 
-![](https://d1muf25xaso8hp.cloudfront.net/https%3A%2F%2Fs3.amazonaws.com%2Fappforest_uf%2Ff1646848586687x743415398353304000%2Fezgif.com-gif-maker%25283%2529.gif?w=768&h=476&auto=compress&dpr=2&fit=max)
+![](https://i.imgur.com/taLeNZ8.gif)
 
 ## Installation
 
