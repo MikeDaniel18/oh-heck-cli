@@ -9,6 +9,6 @@ func GetApiURL() string {
 	if !cfg.IsTesting {
 		return "https://api.oh-heck.dev"
 	} else {
-		return "http://localhost:6000"
+		return "http://localhost:8000"
 	}
 }
