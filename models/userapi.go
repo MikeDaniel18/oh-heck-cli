@@ -119,6 +119,61 @@ func SetQuestionResponse(completion Completion, accepted bool) {
 	}
 }
 
+// call POST user/trial-account to send an email with an API key
+func RequestTrialAccount(email string) (*GeneralResponse, *ErrorResponse) {
+	form := url.Values{}
+	form.Add("email", email)
+
+	req, err := http.NewRequest("POST", fmt.Sprintf("%v/user/trial-account", configs.GetApiURL()), strings.NewReader(form.Encode()))
+
+	var trialResponse *GeneralResponse
+	var errorResponse *ErrorResponse
+
+	if err != nil {
+		fmt.Println("Something went wrong, please ensure you have updated oh-heck")
+		log.Fatalln(err)
+		return trialResponse, errorResponse
+	}
+
+	cfg := configs.ReadConfig()
+
+	req.Header.Add("Authorization", fmt.Sprintf("Bearer %v", cfg.ApiKey))
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+
+	resp, err := http.DefaultClient.Do(req)
+
+	if err != nil {
+		fmt.Println("Something went wrong, please ensure you have updated oh-heck")
+		log.Fatalln(err)
+		return trialResponse, errorResponse
+	}
+
+	defer resp.Body.Close()
+	body, err := ioutil.ReadAll(resp.Body)
+
+	if err != nil {
+		fmt.Println("Something went wrong, please ensure you have updated oh-heck")
+		log.Fatalln(err)
+		return trialResponse, errorResponse
+	}
+
+	statusCode, err := statusCode(body)
+
+	if err != nil {
+		fmt.Println("Something went wrong, please ensure you have updated oh-heck")
+		log.Fatalln(err)
+		return trialResponse, errorResponse
+	}
+
+	if statusCode >= 200 && statusCode < 300 {
+		json.Unmarshal(body, &trialResponse)
+	} else {
+		json.Unmarshal(body, &errorResponse)
+	}
+
+	return trialResponse, errorResponse
+}
+
 func statusCode(body []byte) (int, error) {
 	var result map[string]interface{}
 	json.Unmarshal(body, &result)

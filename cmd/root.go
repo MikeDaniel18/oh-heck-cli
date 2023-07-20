@@ -1,6 +1,5 @@
 /*
 Copyright © 2022 NAME HERE <EMAIL ADDRESS>
-
 */
 package cmd
 
@@ -114,6 +113,7 @@ func makeBashQuestionCall(question string) {
 
 	if errResp != nil && (errResp.Status == 403 || errResp.Status == 401) {
 		InvalidApiKey()
+		// TODO: If the API response is 402 then prompt the user to upgrade their account
 	} else if errResp != nil && errResp.Status > 0 {
 		fmt.Println(errResp.ErrorMessage)
 	} else if completion != nil && len(completion.Id) > 0 {

@@ -1,12 +1,12 @@
 /*
 Copyright © 2022 NAME HERE <EMAIL ADDRESS>
-
 */
 package cmd
 
 import (
 	"fmt"
 	"log"
+	"oh-heck/models"
 	"os/exec"
 	"runtime"
 
@@ -56,14 +56,27 @@ func ShowApiOptions() {
 	if hasApiKey {
 		collectUserApiKey()
 	} else {
-		openWebsite := components.YesNoInput("Open website to get one?")
 
-		if openWebsite {
-			openBrowser(configs.GetWebsiteURL())
+		email := components.StringInput("Enter your email address and we'll send you a key:", "")
+		// validate email
+
+		if email {
+
 		}
+
+		// openWebsite := components.YesNoInput("Open website to get one?")
+
+		// if openWebsite {
+		// 	openBrowser(configs.GetWebsiteURL())
+		// }
 	}
 
 	return
+}
+
+func sendApiKeyToEmail(email string) {
+	_, errResp := models.RequestTrialAccount(email)
+
 }
 
 func InvalidApiKey() {
