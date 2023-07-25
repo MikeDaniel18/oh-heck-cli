@@ -135,9 +135,6 @@ func RequestTrialAccount(email string) (*GeneralResponse, *ErrorResponse) {
 		return trialResponse, errorResponse
 	}
 
-	cfg := configs.ReadConfig()
-
-	req.Header.Add("Authorization", fmt.Sprintf("Bearer %v", cfg.ApiKey))
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 
 	resp, err := http.DefaultClient.Do(req)

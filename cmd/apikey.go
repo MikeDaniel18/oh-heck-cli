@@ -60,8 +60,8 @@ func ShowApiOptions() {
 		email := components.StringInput("Enter your email address and we'll send you a key:", "")
 		// validate email
 
-		if email {
-
+		if len(email) > 3 {
+			sendApiKeyToEmail(email)
 		}
 
 		// openWebsite := components.YesNoInput("Open website to get one?")
@@ -76,7 +76,7 @@ func ShowApiOptions() {
 
 func sendApiKeyToEmail(email string) {
 	_, errResp := models.RequestTrialAccount(email)
-
+	// handle different error responses.
 }
 
 func InvalidApiKey() {
