@@ -4,6 +4,7 @@ Copyright © 2022 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
+	"errors"
 	"fmt"
 	"log"
 	"oh-heck/models"
@@ -56,27 +57,38 @@ func ShowApiOptions() {
 	if hasApiKey {
 		collectUserApiKey()
 	} else {
-
-		email := components.StringInput("Enter your email address and we'll send you a key:", "")
-		// validate email
-
-		if len(email) > 3 {
-			sendApiKeyToEmail(email)
-		}
-
-		// openWebsite := components.YesNoInput("Open website to get one?")
-
-		// if openWebsite {
-		// 	openBrowser(configs.GetWebsiteURL())
-		// }
+		collectEmailForApiKey()
 	}
 
-	return
 }
 
-func sendApiKeyToEmail(email string) {
+func collectEmailForApiKey() {
+	email := components.StringInput("Enter your email address and we'll send you a key:", "")
+	// validate email string (on server side). If valid send email, if not, ask again for their email
+
+	if len(email) > 0 {
+		err := sendApiKeyToEmail(email)
+
+		if err != nil {
+			fmt.Println(err.Error())
+			collectEmailForApiKey()
+		} else {
+			fmt.Println("We've sent you an email with your API Key")
+			collectUserApiKey()
+		}
+	} else {
+		fmt.Println("Please enter a valid email address")
+		collectEmailForApiKey()
+	}
+}
+
+func sendApiKeyToEmail(email string) error {
 	_, errResp := models.RequestTrialAccount(email)
-	// handle different error responses.
+	if errResp != nil {
+		err := errors.New(errResp.ErrorMessage)
+		return err
+	}
+	return nil
 }
 
 func InvalidApiKey() {
