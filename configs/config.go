@@ -2,7 +2,7 @@ package configs
 
 import (
 	"encoding/json"
-	"io/ioutil"
+	"os"
 	"os/user"
 	"path"
 )
@@ -20,11 +20,11 @@ func configPath() string {
 
 func SaveConfig(c Config) {
 	jsonC, _ := json.Marshal(c)
-	ioutil.WriteFile(configPath(), jsonC, 0666)
+	os.WriteFile(configPath(), jsonC, 0666)
 }
 
 func ReadConfig() *Config {
-	data, err := ioutil.ReadFile(configPath())
+	data, err := os.ReadFile(configPath())
 	if err != nil {
 		// fmt.Println(err.Error())
 		return new(Config)
